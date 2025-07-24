@@ -7,15 +7,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Filter posts based on category
     function filterPosts(category) {
+        let visibleCount = 0;
+        
         blogPosts.forEach(post => {
             if (category === 'all' || post.dataset.category === category) {
                 post.style.display = 'block';
                 post.classList.add('fade-in');
+                visibleCount++;
             } else {
                 post.style.display = 'none';
                 post.classList.remove('fade-in');
             }
         });
+        
+        // Show/hide empty state
+        const noPostsElement = document.getElementById('no-posts');
+        if (noPostsElement) {
+            if (visibleCount === 0) {
+                noPostsElement.style.display = 'block';
+            } else {
+                noPostsElement.style.display = 'none';
+            }
+        }
     }
 
     // Handle filter button clicks
