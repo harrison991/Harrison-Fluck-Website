@@ -94,7 +94,7 @@ body {
 
 /* Hero Section */
 .hero {
-    min-height: 100vh;
+    height: 100vh; /* Changed from min-height to height */
     display: flex;
     align-items: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -102,6 +102,7 @@ body {
     position: relative;
     overflow: hidden;
     padding-top: 80px; /* Add padding to account for fixed navbar */
+    box-sizing: border-box; /* Ensure padding is included in height calculation */
 }
 
 .hero::before {
@@ -125,6 +126,7 @@ body {
     align-items: center;
     position: relative;
     z-index: 1;
+    height: 100%; /* Make container take full height of hero section */
 }
 
 .hero-title {
@@ -254,6 +256,7 @@ section {
 .about {
     background: #f8fafc;
     padding-top: 6rem; /* Extra padding for better spacing after hero */
+    margin-top: 0; /* Ensure no margin that could cause overlap */
 }
 
 .about-content {
