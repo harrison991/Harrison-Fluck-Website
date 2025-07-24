@@ -36,44 +36,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Smooth scrolling for navigation links
+    // Smooth scrolling for navigation links (only for anchor links, not page navigation)
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            e.preventDefault();
+            const href = this.getAttribute('href');
             
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            if (targetSection) {
-                const navbarHeight = document.querySelector('.navbar').offsetHeight;
-                const targetPosition = targetSection.offsetTop - navbarHeight;
+            // Only prevent default for internal anchor links (starting with #)
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
                 
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+                const targetId = href;
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                    const targetPosition = targetSection.offsetTop - navbarHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
             }
+            // For page navigation (.html files), let the default behavior happen
         });
     });
 
-    // Active navigation link highlighting
+    // Active navigation link highlighting (updated for multi-page navigation)
     function updateActiveNavLink() {
-        const sections = document.querySelectorAll('section');
-        const navbarHeight = document.querySelector('.navbar').offsetHeight;
+        // For multi-page websites, we don't need to update active links based on scroll
+        // The active class should be set in the HTML based on the current page
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - navbarHeight - 100;
-            const sectionHeight = section.offsetHeight;
-            
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
-
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
+            const linkHref = link.getAttribute('href');
+            
+            // Check if the link matches the current page
+            if (linkHref === currentPage || 
+                (currentPage === '' && linkHref === 'index.html') ||
+                (currentPage === 'index.html' && linkHref === 'index.html')) {
                 link.classList.add('active');
             }
         });
@@ -93,10 +95,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Scroll event listeners
     window.addEventListener('scroll', function() {
-        updateActiveNavLink();
         updateNavbarBackground();
         animateOnScroll();
     });
+
+    // Call updateActiveNavLink once on page load to set the correct active state
+    updateActiveNavLink();
 
     // Scroll animations
     function animateOnScroll() {
@@ -281,7 +285,6 @@ function debounce(func, wait) {
 
 // Performance optimization for scroll events
 const debouncedScroll = debounce(() => {
-    updateActiveNavLink();
     updateNavbarBackground();
     animateOnScroll();
 }, 10);
